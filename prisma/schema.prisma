@@ -7,22 +7,21 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model User {
-  id        String    @id @default(uuid())
+  id        String @id @default(uuid())
   email     String @unique
   firstname String
   lastname  String
   password  String
 
-  CourseEnrollment                      CourseEnrollment[]
-  Grader    AssignmentSubmission[]       @relation("grader")
-  Student   AssignmentSubmission[]       @relation("student")
-  videoNotes                            VideoNotes[]
-  videoComments                         VideoComments[]
+  CourseEnrollment CourseEnrollment[]
+  Grader           AssignmentSubmission[] @relation("grader")
+  Student          AssignmentSubmission[] @relation("student")
+  videoNotes       VideoNotes[]
+  videoComments    VideoComments[]
   Post             Post[]
   PostLikes        PostLikes[]
-  PostComments     PostComments[] 
+  PostComments     PostComments[]
 }
 
 enum UserRole {
@@ -30,12 +29,10 @@ enum UserRole {
   TEACHER
 }
 
-
 model Course {
-  id               String                @id @default(uuid())
-  name             String
-  courseDetails    String
-
+  id            String @id @default(uuid())
+  name          String
+  courseDetails String
 
   CourseEnrollment CourseEnrollment[]
   Assignment       Assignment[]
@@ -57,135 +54,134 @@ model CourseEnrollment {
 }
 
 model Assignment {
-  id              String       @id @default(uuid())
-  updatedAt       DateTime     @updatedAt
-  name            String
-  description     String
-  startTime       DateTime     @default(now())
-  dueTime         DateTime?
-  marks           Int?
-  Attachment      String?
-  
-  courseId        String
-  Course          Course       @relation(fields: [courseId], references: [id])
+  id          String    @id @default(uuid())
+  updatedAt   DateTime  @updatedAt
+  name        String
+  description String
+  startTime   DateTime  @default(now())
+  dueTime     DateTime?
+  marks       Int?
+  Attachment  String?
+
+  courseId             String
+  Course               Course                 @relation(fields: [courseId], references: [id])
   AssignmentSubmission AssignmentSubmission[]
 }
 
-model AssignmentSubmission{
-  id                              String      @id @default(uuid())
-  createdAt                       DateTime @default(now())
-  submissionTime                  DateTime @default(now())
-  marks                           Int
-  status                          AssignmentStatus
-  Attachment                      String
+model AssignmentSubmission {
+  id             String           @id @default(uuid())
+  createdAt      DateTime         @default(now())
+  submissionTime DateTime         @default(now())
+  marks          Int
+  status         AssignmentStatus
+  Attachment     String
 
-  AssignmentId                    String
-  studentId                       String
-  graderId                        String   
-  Grader                          User     @relation("grader", fields: [graderId], references: [id])
-  Student                         User     @relation("student", fields: [studentId], references: [id])
-  Assignment                      Assignment     @relation(fields: [AssignmentId], references: [id])
+  AssignmentId String
+  studentId    String
+  graderId     String
+  Grader       User       @relation("grader", fields: [graderId], references: [id])
+  Student      User       @relation("student", fields: [studentId], references: [id])
+  Assignment   Assignment @relation(fields: [AssignmentId], references: [id])
 }
 
-enum AssignmentStatus{
+enum AssignmentStatus {
   SUBMITTED
   EVALUATED
 }
 
-model Module{
-  id                        String          @id @default(uuid())
-  moduleNumber              Int
-  title                     String
-  description               String?
+model Module {
+  id           String  @id @default(uuid())
+  moduleNumber Int
+  title        String
+  description  String?
 
-  CourseId                  String
-  course                    Course          @relation(fields: [CourseId],references: [id])
-  videos                    Video[]
-  lectureNotes              LectureNotes[]
+  CourseId     String
+  course       Course         @relation(fields: [CourseId], references: [id])
+  videos       Video[]
+  lectureNotes LectureNotes[]
 }
 
-model LectureNotes{
-  id                        String          @id @default(uuid())
-  title                     String
-  description               String
-  lectureURL                String
-  
+model LectureNotes {
+  id          String @id @default(uuid())
+  title       String
+  description String
+  lectureURL  String
 
-  moduleId                  String
-  module                    Module          @relation(fields: [moduleId],references: [id])
-  courseId                  String
-  course                    Course          @relation(fields: [courseId],references: [id])
+  moduleId String
+  module   Module @relation(fields: [moduleId], references: [id])
+  courseId String
+  course   Course @relation(fields: [courseId], references: [id])
 }
 
-model Video{
-  id                        String          @id @default(uuid())
-  title                     String
-  videoURL                  String
+model Video {
+  id       String @id @default(uuid())
+  title    String
+  videoURL String
 
-  moduleId                  String
-  module                    Module          @relation(fields: [moduleId],references: [id])
-  courseId                  String
-  course                    Course          @relation(fields: [courseId],references: [id])
-  videoNotes                VideoNotes[]
-  videoComments             VideoComments[]
+  moduleId      String
+  module        Module          @relation(fields: [moduleId], references: [id])
+  courseId      String
+  course        Course          @relation(fields: [courseId], references: [id])
+  videoNotes    VideoNotes[]
+  videoComments VideoComments[]
 }
 
-model VideoNotes{
-  id                        String          @id @default(uuid())
-  title                     String?
-  timeStamp                 String
-  description               String
+model VideoNotes {
+  id          String  @id @default(uuid())
+  title       String?
+  timeStamp   String
+  description String
 
-  videoId                   String
-  Video                     Video           @relation(fields: [videoId],references: [id])
-  userId                    String
-  User                      User            @relation(fields: [userId],references: [id])
+  videoId String
+  Video   Video  @relation(fields: [videoId], references: [id])
+  userId  String
+  User    User   @relation(fields: [userId], references: [id])
 }
 
-model VideoComments{
-  id                        String          @id @default(uuid())
-  createdAt                 DateTime        @default(now())
-  title                     String?
-  description               String
+model VideoComments {
+  id          String   @id @default(uuid())
+  createdAt   DateTime @default(now())
+  title       String?
+  description String
 
-  videoId                   String
-  Video                     Video           @relation(fields: [videoId],references: [id])
-  userId                    String
-  User                      User            @relation(fields: [userId],references: [id])
+  videoId String
+  Video   Video  @relation(fields: [videoId], references: [id])
+  userId  String
+  User    User   @relation(fields: [userId], references: [id])
 }
 
-model Post{
-  id                        String          @id @default(uuid())
-  createdAt                 DateTime        @default(now())
-  title                     String
-  description               String
-  attachment                String?
+model Post {
+  id          String   @id @default(uuid())
+  createdAt   DateTime @default(now())
+  title       String
+  description String
+  attachment  String?
 
-  courseId                  String
-  course                    Course          @relation(fields: [courseId],references: [id])
-  userId                    String
-  User                      User            @relation(fields: [userId],references: [id])
-  PostLikes                 PostLikes[]
-  PostComments              PostComments[]
-
-}
-model PostLikes{
-  createdAt                 DateTime        @default(now())
-
-  postId                    String
-  Post                      Post          @relation(fields: [postId],references: [id])
-  userId                    String
-  User                      User            @relation(fields: [userId],references: [id])
-  @@id([postId,userId])
-
-}
-model PostComments{
-  id                        String          @id @default(uuid())
-  createdAt                 DateTime        @default(now())
-
-  postId                    String
-  Post                      Post          @relation(fields: [postId],references: [id])
-  userId                    String
-  User                      User            @relation(fields: [userId],references: [id])
+  courseId     String
+  course       Course         @relation(fields: [courseId], references: [id])
+  userId       String
+  User         User           @relation(fields: [userId], references: [id])
+  PostLikes    PostLikes[]
+  PostComments PostComments[]
 }
 
+model PostLikes {
+  createdAt DateTime @default(now())
+
+  postId String
+  Post   Post   @relation(fields: [postId], references: [id])
+  userId String
+  User   User   @relation(fields: [userId], references: [id])
+
+  @@id([postId, userId])
+}
+
+model PostComments {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  content   String
+  postId    String
+  Post      Post     @relation(fields: [postId], references: [id])
+  userId    String
+  User      User     @relation(fields: [userId], references: [id])
+}

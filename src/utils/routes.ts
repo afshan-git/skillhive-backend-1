@@ -7,6 +7,15 @@ import {
   getCourses,
   getOneCourse,
   unenrollCourse,
+  updateCourseDetails,
+  createPost,
+  getPosts,
+  getPostDetails,
+  createModule,
+  getModuleDetails,
+  uploadNotes,
+  uploadVideo,
+  createComment,
 } from "../handlers/courses";
 import {
   createAssignment,
@@ -117,5 +126,74 @@ router.put(
   "/students/courses/:courseId/assignments/:assignmentId/assignmentSubmissions/:assignmentSubmissionId",
   () => {}
 );
+//MODULES
 
+//create a module
+router.post(
+  "/:courseId/modules",
+  param("courseId"),
+  body("title"),
+  handleInputErrors,
+  createModule
+);
+
+// get module details for the given module id
+router.get(
+  "/:courseId/modules/:moduleId",
+  param("moduleId"),
+  handleInputErrors,
+  getModuleDetails
+);
+
+router.post(
+  "/:courseId/modules/:moduleId/vidoes",
+  body("videoUrl").isString(),
+  body("title").isString(),
+  handleInputErrors,
+  uploadVideo
+);
+
+router.post(
+  "/:courseId/modules/:moduleId/videos",
+  body("notesUrl").isString(),
+  body("title").isString(),
+  handleInputErrors,
+  uploadNotes
+);
+//Forrum posts for a course
+
+//create a post
+router.post(
+  "/:courseId/posts",
+  param("courseId"),
+  body("userId"),
+  body("title"),
+  body("content"),
+  handleInputErrors,
+  createPost
+);
+
+//get all posts related to a course
+router.post("/:courseId/posts", param("courseId"), handleInputErrors, getPosts);
+
+//get everything related to a post
+
+router.get(
+  "/:courseId/posts/:postId",
+  param("courseId"),
+  param("postId"),
+  handleInputErrors,
+  getPostDetails
+);
+
+// comment on a post
+router.post(
+  "/:courseId/posts/:postId/comments",
+  param("courseId"),
+  param("postId"),
+  body("userId"),
+  body("content"),
+  handleInputErrors,
+  createComment
+);
 export default router;

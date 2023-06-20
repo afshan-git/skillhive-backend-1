@@ -40,9 +40,9 @@ app.post(
 app.use((err, req, res, next) => {
   console.log(err);
   if (err.type === "input") {
-    res.status(401).json({ message: `invalid input` });
+    res.status(401).json({ message: `invalid inputsss ${err}` });
   } else {
-    res.status(500).json({ message: "Some errors" });
+    res.status(500).json({ message: "Some errors", err });
   }
 });
 
